@@ -3,14 +3,31 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "classnames": "^2.2.5",
+    "eslint": "^4.15.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-prettier": "^2.4.0",
+    "eslint-plugin-react": "^7.5.1",
+    "node-sass-chokidar": "0.0.3",
+    "npm-run-all": "^4.1.2",
+    "particle-api-js": "^7.0.1",
+    "prettier": "^1.10.2",
+    "prop-types": "^15.6.0",
+    "raspberry-pi-bits": "github:RaspberryPiFoundation/Bits#v1.1.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.17"
   },
   "scripts": {
+    "build-css": "node-sass-chokidar src/ -o src/",
+    "build": "npm install --force && node-sass-chokidar src/ -o src/ && react-scripts build",
+    "dev": "npm-run-all -p watch-css start",
+    "eject": "react-scripts eject",
+    "lint": "eslint src/. --ext .js; exit 0;",
     "start": "react-scripts start",
-    "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive"
   }
 }
