@@ -1,6 +1,9 @@
-import { Button, TypeBase, TypeDisplay } from "raspberry-pi-bits"
-import React, { Component } from "react"
-import PropTypes from "prop-types"
+import { Button, TypeBase, TypeDisplay } from 'raspberry-pi-bits'
+import React, { Component } from 'react'
+import Particle from 'particle-api-js'
+import PropTypes from 'prop-types'
+
+const particle = new Particle()
 
 class Authenticate extends Component {
   constructor(props) {
@@ -20,13 +23,9 @@ class Authenticate extends Component {
       username: this.state.username,
     }
 
-    this.props.particle.login(credentials).then(
-      data => {
-        this.props.authenticationCallback(data.body.access_token)
-      },
-      err => {
-        console.log("Could not log in.", err)
-      },
+    particle.login(credentials).then(
+      data => this.props.authenticationCallback(data.body.access_token),
+      err => console.log('Could not log in.', err) // eslint-disable-line
     )
   }
 
@@ -49,11 +48,11 @@ class Authenticate extends Component {
 
         <form action="/" method="POST" onSubmit={this.loginToParticle}>
           <TypeBase element="p">
-            <label htmlFor="usernane">Username:</label>{" "}
+            <label htmlFor="usernane">Username:</label>{' '}
             <input id="username" name="username" onChange={this.updateUsername} type="email" />
           </TypeBase>
           <TypeBase element="p">
-            <label htmlFor="password">Password:</label>{" "}
+            <label htmlFor="password">Password:</label>{' '}
             <input id="password" name="password" onChange={this.updatePassword} type="password" />
           </TypeBase>
           <Button>Submit</Button>
@@ -65,7 +64,6 @@ class Authenticate extends Component {
 
 Authenticate.propTypes = {
   authenticationCallback: PropTypes.func.isRequired,
-  particle: PropTypes.object.isRequired,
 }
 
 export default Authenticate
