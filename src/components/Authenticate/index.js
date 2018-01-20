@@ -16,14 +16,10 @@ class Authenticate extends Component {
   loginToParticle = event => {
     event.preventDefault()
 
-    console.log('logging in')
-
     let credentials = {
       password: this.state.password,
       username: this.state.username,
     }
-
-    console.log(credentials)
 
     this.props.particle.login(credentials).then(
       data => this.props.authCallback(data.body.access_token),

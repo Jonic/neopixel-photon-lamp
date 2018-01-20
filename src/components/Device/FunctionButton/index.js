@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 const FunctionButton = ({ callback, functionName, label, value, variableName }) => {
-  const clickHandler = () => {
+  const onClickHandler = () => {
     callback(functionName, value, variableName)
   }
 
-  return <Button onClick={clickHandler}>{label}</Button>
+  return <Button onClick={onClickHandler}>{label}</Button>
 }
 
 FunctionButton.propTypes = {
