@@ -1,15 +1,13 @@
 import { Container, Slice, TypeDisplayLarge } from 'raspberry-pi-bits'
 import { withCookies, Cookies } from 'react-cookie'
-import Particle from 'particle-api-js'
 import { instanceOf } from 'prop-types'
+import Particle from 'particle-api-js'
 import React, { Component } from 'react'
 
-import Authenticate from './Authenticate/Authenticate'
-import DeviceManager from './DeviceManager/DeviceManager'
+import Authenticate from './Authenticate'
+import Device from './Device'
 
 import './App.css'
-
-const particle = new Particle()
 
 class App extends Component {
   constructor(props) {
@@ -18,32 +16,30 @@ class App extends Component {
     const { cookies } = this.props
 
     this.state = {
-      authenticated: cookies.get('authenticated') || false,
-      deviceId:      process.env.REACT_APP_PARTICLE_DEVICE_ID,
-      token:         cookies.get('token') || null,
+      authToken:  cookies.get('authToken') || null,
+      deviceData: null,
+      deviceId:   process.env.REACT_APP_PARTICLE_DEVICE_ID,
+      particle:   new Particle(),
     }
   }
 
-  authenticationCallback = token => {
+  authenticated = () => this.state.authToken
+
+  authCallback = authToken => {
     this.setState(
       {
-        authenticated: true,
-        token:         token,
+        authToken: authToken,
       },
-      () => {
-        this.storeAuthenticationDetails()
-        this.getDeviceInfo()
-      }
+      this.storeAuthDetails
     )
   }
 
-  getDeviceInfo = () => {}
-
-  storeAuthenticationDetails = () => {
+  storeAuthDetails = () => {
     const { cookies } = this.props
 
-    cookies.set('authenticated', this.state.authenticated, { path: '/' })
-    cookies.set('token', this.state.token, { path: '/' })
+    cookies.set('authToken', this.state.authToken, {
+      path: '/',
+    })
   }
 
   render() {
@@ -52,9 +48,9 @@ class App extends Component {
         <Container>
           <TypeDisplayLarge element="h1">IOT Lamp</TypeDisplayLarge>
 
-          {this.state.authenticated
-            ? <DeviceManager deviceId={this.state.deviceId} />
-            : <Authenticate authenticationCallback={this.authenticationCallback} particle={particle} />
+          {this.state.authToken
+            ? <Device token={this.state.authToken} id={this.state.deviceId} particle={this.state.particle} />
+            : <Authenticate authCallback={this.authCallback} particle={this.state.particle} />
           }
         </Container>
       </Slice>
