@@ -1,7 +1,9 @@
-import { TypeDisplay } from 'raspberry-pi-bits'
+import { TypeBase, TypeDisplay } from 'raspberry-pi-bits'
 import Particle from 'particle-api-js'
 import PropTypes, { instanceOf } from 'prop-types'
 import React, { Component } from 'react'
+
+import FunctionButton from './FunctionButton'
 
 class Device extends Component {
   constructor(props) {
@@ -12,7 +14,7 @@ class Device extends Component {
       data:          null,
       functions:     {},
       variables:     {},
-      variablesKeys: {},
+      variablesKeys: [],
     }
 
     this.getData()
@@ -25,6 +27,18 @@ class Device extends Component {
         deviceId: this.props.id,
       },
     })
+  }
+
+  callFunction = (functionName, value, variableName) => {
+    let apiArgs = this.state.apiArgs
+
+    apiArgs.name = functionName
+    apiArgs.argument = value
+
+    this.props.particle.callFunction(apiArgs).then(
+      () => this.getVariable(variableName),
+      error => console.log('API call failed: ', error) // eslint-disable-line
+    )
   }
 
   getData = () => {
@@ -57,6 +71,7 @@ class Device extends Component {
     this.props.particle.getVariable(apiArgs).then(
       data => {
         variables[key] = data.body.result
+
         this.setState({
           variables: variables,
         })
@@ -81,8 +96,6 @@ class Device extends Component {
   renderVariable = key => {
     const value = this.state.variables[key]
 
-    console.log(key, value)
-
     if (typeof value === 'undefined') {
       return null
     }
@@ -94,13 +107,50 @@ class Device extends Component {
     )
   }
 
-  renderVariables = () => <ul>{Object.keys(this.state.variables).map(key => this.renderVariable(key))}</ul>
+  renderVariables = () => {
+    var keys = this.state.variablesKeys.sort()
+
+    return <ul>{keys.map(key => this.renderVariable(key))}</ul>
+  }
 
   render() {
     return (
       <div>
         <TypeDisplay element="h2">Device ID: {this.props.id}</TypeDisplay>
+
         {this.renderVariables()}
+
+        <TypeDisplay element="h3">Change Mode:</TypeDisplay>
+
+        <TypeBase element="p">
+          <FunctionButton
+            callback={this.callFunction}
+            functionName="changeMode"
+            label="Static"
+            value="0"
+            variableName="currentMode"
+          />
+        </TypeBase>
+
+        <TypeBase element="p">
+          <FunctionButton
+            callback={this.callFunction}
+            functionName="changeMode"
+            label="Flames"
+            value="1"
+            variableName="currentMode"
+          />
+        </TypeBase>
+
+        <TypeBase element="p">
+          <FunctionButton
+            callback={this.callFunction}
+            functionName="changeMode"
+            label="Rainbow"
+            value="2"
+            variableName="currentMode"
+          />
+        </TypeBase>
       </div>
     )
   }
