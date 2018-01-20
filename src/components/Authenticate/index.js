@@ -1,9 +1,7 @@
 import { Button, TypeBase, TypeDisplay } from 'raspberry-pi-bits'
 import React, { Component } from 'react'
 import Particle from 'particle-api-js'
-import PropTypes from 'prop-types'
-
-const particle = new Particle()
+import PropTypes, { instanceOf } from 'prop-types'
 
 class Authenticate extends Component {
   constructor(props) {
@@ -18,13 +16,17 @@ class Authenticate extends Component {
   loginToParticle = event => {
     event.preventDefault()
 
+    console.log('logging in')
+
     let credentials = {
       password: this.state.password,
       username: this.state.username,
     }
 
-    particle.login(credentials).then(
-      data => this.props.authenticationCallback(data.body.access_token),
+    console.log(credentials)
+
+    this.props.particle.login(credentials).then(
+      data => this.props.authCallback(data.body.access_token),
       err => console.log('Could not log in.', err) // eslint-disable-line
     )
   }
@@ -63,7 +65,8 @@ class Authenticate extends Component {
 }
 
 Authenticate.propTypes = {
-  authenticationCallback: PropTypes.func.isRequired,
+  authCallback: PropTypes.func.isRequired,
+  particle:     instanceOf(Particle).isRequired,
 }
 
 export default Authenticate
