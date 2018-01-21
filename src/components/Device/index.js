@@ -4,6 +4,7 @@ import PropTypes, { instanceOf } from 'prop-types'
 import React, { Component } from 'react'
 
 import FunctionButton from './FunctionButton'
+import FunctionSlider from './FunctionSlider'
 
 class Device extends Component {
   constructor(props) {
@@ -125,17 +126,49 @@ class Device extends Component {
         <TypeBase element="p">
           <FunctionButton
             callback={this.callFunction}
-            functionName="changeMode"
+            functionName="updateMode"
             label="Static"
             value="0"
             variableName="currentMode"
           />
         </TypeBase>
 
+        <ul>
+          <li>
+            <FunctionSlider
+              callback={this.callFunction}
+              currentValue={this.state.variables.staticRed}
+              functionName="updateRed"
+              label="Red Value"
+              variableName="staticRed"
+            />
+          </li>
+
+          <li>
+            <FunctionSlider
+              callback={this.callFunction}
+              currentValue={this.state.variables.staticGreen}
+              functionName="updateGreen"
+              label="Green Value"
+              variableName="staticGreen"
+            />
+          </li>
+
+          <li>
+            <FunctionSlider
+              callback={this.callFunction}
+              currentValue={this.state.variables.staticBlue}
+              functionName="updateBlue"
+              label="Blue Value"
+              variableName="staticBlue"
+            />
+          </li>
+        </ul>
+
         <TypeBase element="p">
           <FunctionButton
             callback={this.callFunction}
-            functionName="changeMode"
+            functionName="updateMode"
             label="Flames"
             value="1"
             variableName="currentMode"
@@ -145,7 +178,7 @@ class Device extends Component {
         <TypeBase element="p">
           <FunctionButton
             callback={this.callFunction}
-            functionName="changeMode"
+            functionName="updateMode"
             label="Rainbow"
             value="2"
             variableName="currentMode"
